@@ -99,13 +99,12 @@
     .flip{ position:absolute; inset:0; transform-style: preserve-3d; transition: transform 900ms ease; border-radius:12px; }
     .flip.is-flipped{ transform: rotateY(180deg); }
     .face{ position:absolute; inset:0; backface-visibility:hidden; background-size:cover; background-position:center 30%; filter: grayscale(100%) contrast(1.05) brightness(.9); }
-    /* Raise crop for tall images (~40%) by URL match (kept harmless even if those URLs are not used) */
     .tiles [style*="p4pK0C6.jpeg"],
     .tiles [style*="C58EOXL.jpeg"]{ background-position:center 40% !important; }
     .face.back{ transform: rotateY(180deg); }
     .legend{ position:absolute; inset:auto 0 0 0; padding:16px; background:linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0)); text-align:center; z-index:2; }
     .cta{ display:inline-block; margin-top:10px; background:#fff; color:#000; padding:10px 16px; border-radius:999px; font-weight:700; text-decoration:none; border:1px solid #fff; }
-    .cta:hover{ filter: brightness(0.9); }
+    .cta:hover { filter: brightness(0.9); }
   </style>
 </head>
 <body>
@@ -115,42 +114,12 @@
   <section id="gallery" aria-label="Photo highlights" style="width:100%; max-width:1000px; margin:auto; padding:0 32px 24px;">
     <div class="flip-gallery">
       <div class="tiles" id="flipTiles" aria-hidden="true">
-        <div class="tile">
-          <div class="flip">
-            <div class="face front" style="background-image:url('https://i.imgur.com/4r4jaeH.jpeg');"></div>
-            <div class="face back"  style="background-image:url('https://i.imgur.com/DGQCkwq.jpeg');"></div>
-          </div>
-        </div>
-        <div class="tile">
-          <div class="flip">
-            <div class="face front" style="background-image:url('https://i.imgur.com/mULQ0EF.jpeg');"></div>
-            <div class="face back"  style="background-image:url('https://i.imgur.com/pBvx2YN.jpeg');"></div>
-          </div>
-        </div>
-        <div class="tile">
-          <div class="flip">
-            <div class="face front" style="background-image:url('https://i.imgur.com/g3pxHSd.jpeg');"></div>
-            <div class="face back"  style="background-image:url('https://i.imgur.com/TZcphYU.jpeg');"></div>
-          </div>
-        </div>
-        <div class="tile">
-          <div class="flip">
-            <div class="face front" style="background-image:url('https://i.imgur.com/pPCzhgU.jpeg');"></div>
-            <div class="face back"  style="background-image:url('https://i.imgur.com/EyarIGa.jpeg');"></div>
-          </div>
-        </div>
-        <div class="tile">
-          <div class="flip">
-            <div class="face front" style="background-image:url('https://i.imgur.com/zVId5CV.jpeg');"></div>
-            <div class="face back"  style="background-image:url('https://i.imgur.com/wHnEcqK.jpeg');"></div>
-          </div>
-        </div>
-        <div class="tile">
-          <div class="flip">
-            <div class="face front" style="background-image:url('https://i.imgur.com/TZcphYU.jpeg');"></div>
-            <div class="face back"  style="background-image:url('https://i.imgur.com/EyarIGa.jpeg');"></div>
-          </div>
-        </div>
+        <div class="tile"><div class="flip"><div class="face front" style="background-image:url('https://i.imgur.com/4r4jaeH.jpeg');"></div><div class="face back" style="background-image:url('https://i.imgur.com/DGQCkwq.jpeg');"></div></div></div>
+        <div class="tile"><div class="flip"><div class="face front" style="background-image:url('https://i.imgur.com/mULQ0EF.jpeg');"></div><div class="face back" style="background-image:url('https://i.imgur.com/pBvx2YN.jpeg');"></div></div></div>
+        <div class="tile"><div class="flip"><div class="face front" style="background-image:url('https://i.imgur.com/g3pxHSd.jpeg');"></div><div class="face back" style="background-image:url('https://i.imgur.com/TZcphYU.jpeg');"></div></div></div>
+        <div class="tile"><div class="flip"><div class="face front" style="background-image:url('https://i.imgur.com/pPCzhgU.jpeg');"></div><div class="face back" style="background-image:url('https://i.imgur.com/EyarIGa.jpeg');"></div></div></div>
+        <div class="tile"><div class="flip"><div class="face front" style="background-image:url('https://i.imgur.com/zVId5CV.jpeg');"></div><div class="face back" style="background-image:url('https://i.imgur.com/wHnEcqK.jpeg');"></div></div></div>
+        <div class="tile"><div class="flip"><div class="face front" style="background-image:url('https://i.imgur.com/TZcphYU.jpeg');"></div><div class="face back" style="background-image:url('https://i.imgur.com/EyarIGa.jpeg');"></div></div></div>
       </div>
       <div class="legend">
         <a class="cta" href="#rsvp" aria-label="Skip to RSVP form">RSVP now</a>
@@ -164,66 +133,69 @@
       <p class="sub">12/12/2025 • The Loft @ The Rabbit Hotel • 1:30pm</p>
     </header>
 
-    <section id="rsvp" class="card" aria-labelledby="rsvp-heading">
-      <h2 id="rsvp-heading" class="sr-only">RSVP Form</h2>
-      <form id="rsvpForm" aria-describedby="privacyNote">
-        <div class="grid grid-cols">
-          <div>
-            <label for="fullName" class="req">Name of person RSVP'ing</label>
-            <input id="fullName" name="fullName" type="text" required autocomplete="name" />
-          </div>
-          <div>
-            <label for="email" class="req">Email</label>
-            <input id="email" name="email" type="email" required autocomplete="email" />
-          </div>
-        </div>
+  <section id="rsvp" class="card" aria-labelledby="rsvp-heading">
+    <h2 id="rsvp-heading" class="sr-only">RSVP Form</h2>
+    <form id="rsvpForm" aria-describedby="privacyNote">
+      <!-- Honeypot -->
+      <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-100vw;opacity:0;height:0;width:0;" />
 
-        <fieldset style="margin-top:12px; border:0; padding:0;">
-          <legend class="req" style="font-weight:600; margin-bottom:8px;">Will you attend?</legend>
-          <div class="inline" role="radiogroup" aria-label="Attendance">
-            <label class="pill"><input type="radio" name="attending" value="Yes" required /> Yes, we will attend</label>
-            <label class="pill"><input type="radio" name="attending" value="No" /> Regretfully decline</label>
-          </div>
-        </fieldset>
-
-        <div id="guestsWrap" style="display:none;">
-          <label class="req" style="margin-top:16px;">Guests</label>
-          <div id="guestsList" class="grid"></div>
-          <div class="actions">
-            <button type="button" id="addGuestBtn" class="ghost">Add partner</button>
-          </div>
-          <p class="hint">You can RSVP for up to 2 people (including yourself). Change MAX_GUESTS in the script to allow more.</p>
-        </div>
-
-        <div class="grid grid-cols">
-          <div>
-            <label for="phone">Phone (optional)</label>
-            <input id="phone" name="phone" type="text" inputmode="tel" autocomplete="tel" />
-          </div>
-          <div id="partySizeWrap" style="display:none;">
-            <label for="partySize" class="req">Party size</label>
-            <input id="partySize" name="partySize" type="number" min="1" max="10" value="1" required readonly />
-            <p class="hint">Auto-fills based on the number of named guests.</p>
-          </div>
-        </div>
-
+      <div class="grid grid-cols">
         <div>
-          <label for="message">Message (optional)</label>
-          <textarea id="message" name="message" rows="4" placeholder="Leave a message/advice for the bride & groom.. Request a song.."></textarea>
+          <label for="fullName" class="req">Name of person RSVP'ing</label>
+          <input id="fullName" name="fullName" type="text" required autocomplete="name" />
         </div>
-
-        <div class="notice" id="privacyNote">
-          We’ll use your details solely for event planning and won’t share them with third parties.
+        <div>
+          <label for="email" class="req">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" />
         </div>
+      </div>
 
-        <input type="hidden" name="guestsJson" id="guestsJson" />
+      <fieldset style="margin-top:12px; border:0; padding:0;">
+        <legend class="req" style="font-weight:600; margin-bottom:8px;">Will you attend?</legend>
+        <div class="inline" role="radiogroup" aria-label="Attendance">
+          <label class="pill"><input type="radio" name="attending" value="Yes" required /> Yes, we will attend</label>
+          <label class="pill"><input type="radio" name="attending" value="No" /> Regretfully decline</label>
+        </div>
+      </fieldset>
 
+      <div id="guestsWrap" style="display:none;">
+        <label class="req" style="margin-top:16px;">Guests</label>
+        <div id="guestsList" class="grid"></div>
         <div class="actions">
-          <button id="submitBtn" type="submit">Send RSVP</button>
-          <button class="ghost" type="reset">Reset</button>
+          <button type="button" id="addGuestBtn" class="ghost">Add partner</button>
         </div>
-      </form>
-    </section>
+        <p class="hint">You can RSVP for up to 2 people (including yourself). Change MAX_GUESTS in the script to allow more.</p>
+      </div>
+
+      <div class="grid grid-cols">
+        <div>
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" name="phone" type="text" inputmode="tel" autocomplete="tel" />
+        </div>
+        <div id="partySizeWrap" style="display:none;">
+          <label for="partySize" class="req">Party size</label>
+          <input id="partySize" name="partySize" type="number" min="1" max="10" value="1" required readonly />
+          <p class="hint">Auto-fills based on the number of named guests.</p>
+        </div>
+      </div>
+
+      <div>
+        <label for="message">Message (optional)</label>
+        <textarea id="message" name="message" rows="4" placeholder="Leave a message/advice for the bride & groom.. Request a song.."></textarea>
+      </div>
+
+      <div class="notice" id="privacyNote">
+        We’ll use your details solely for event planning and won’t share them with third parties.
+      </div>
+
+      <input type="hidden" name="guestsJson" id="guestsJson" />
+
+      <div class="actions">
+        <button id="submitBtn" type="submit">Send RSVP</button>
+        <button class="ghost" type="reset">Reset</button>
+      </div>
+    </form>
+  </section>
 
     <footer>
       <small>© <span id="year"></span> Designed & Created by P8 UTH</small>
@@ -276,7 +248,7 @@
       function flipSome(){
         if(hoverPause) return;
         if(!tiles.length) return;
-        var count = Math.max(1, Math.floor(tiles.length / 3)); // flip about a third of tiles
+        var count = Math.max(1, Math.floor(tiles.length / 3));
         var chosen = new Set();
         while(chosen.size < count){ chosen.add(Math.floor(Math.random() * tiles.length)); }
         chosen.forEach(function(i){
@@ -355,6 +327,78 @@
           if(!yes){ guestsList.innerHTML = ''; }
           syncParty();
         }
+      });
+    })();
+  </script>
+
+  <!-- EmailJS (frontend email, no server needed) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      try { emailjs.init("tY6612UscyZwe3gaZ"); }
+      catch(err) { console.warn('EmailJS init failed', err); }
+    })();
+  </script>
+  <script>
+    (function(){
+      var form = document.getElementById('rsvpForm');
+      if(!form) return;
+      var successTpl = document.getElementById('successTpl');
+      var mainCard   = document.getElementById('rsvp').closest('.card');
+      var submitBtn  = document.getElementById('submitBtn');
+
+      function isSpam(fd){ return (fd.get('company')||'').trim() !== ''; }
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var fd = new FormData(form);
+        if(isSpam(fd)) return; // silently drop bots
+
+        var attending = fd.get('attending') || '';
+        var list = document.getElementById('guestsList');
+        var guests = [];
+        Array.prototype.slice.call(list.children).forEach(function(el){
+          var name = (el.querySelector('.g-name') && el.querySelector('.g-name').value) || '';
+          var diet = (el.querySelector('.g-diet') && el.querySelector('.g-diet').value) || '';
+          if(name.trim()) guests.push({ name: name.trim(), diet: diet.trim() });
+        });
+
+        var partySizeEl = document.getElementById('partySize');
+        var partySize   = partySizeEl ? partySizeEl.value : (attending==='Yes' ? (guests.length || 1) : 0);
+
+        var payload = {
+          fullName:  fd.get('fullName') || '',
+          email:     fd.get('email')    || '',
+          attending: attending,
+          phone:     fd.get('phone')    || '',
+          partySize: String(partySize),
+          message:   fd.get('message')  || '',
+          guests_json: JSON.stringify(guests)
+        };
+
+        if(submitBtn) submitBtn.disabled = true;
+
+        // Replace with your real EmailJS Service + Template IDs:
+        var SERVICE_ID  = service_c6pcqj5;
+        var TEMPLATE_ID = template_10j6wbc;
+
+        emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
+          .then(function(){
+            if(successTpl && mainCard){
+              var frag = successTpl.content.cloneNode(true);
+              var pre = frag.querySelector('#summary');
+              if(pre) pre.textContent = JSON.stringify(payload, null, 2);
+              mainCard.replaceWith(frag);
+            } else {
+              alert('RSVP sent! Thank you 🎉');
+            }
+            form.reset();
+          })
+          .catch(function(err){
+            console.error(err);
+            alert('Sorry — email failed to send. Please try again.');
+          })
+          .finally(function(){ if(submitBtn) submitBtn.disabled = false; });
       });
     })();
   </script>
