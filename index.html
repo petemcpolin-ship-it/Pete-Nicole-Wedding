@@ -10,10 +10,353 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    /* CSS omitted here to keep the snippet short, but full content should be included */
+    :root{
+      --bg:#ffffff;
+      --fg:#111111;
+      --muted:#6b6b6b;
+      --soft:#f3f3f3;
+      --accent:#111111;
+      --accent-text:#ffffff;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --focus: 0 0 0 3px #000;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0a0a0a; --fg:#f6f6f6; --muted:#bdbdbd; --soft:#151515; --accent:#ffffff; --accent-text:#000000; --shadow:0 10px 30px rgba(0,0,0,.3); --focus: 0 0 0 3px #fff; }
+    }
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0; font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; background:var(--bg); color:var(--fg);
+      display:block; padding:0;
+    }
+    .shell{ width:min(950px, 100%); display:grid; gap:28px; margin:auto; padding:32px; }
+    header{ display:grid; gap:8px; text-align:center; padding:32px; }
+    .brand{ font-size: clamp(32px, 5vw, 60px); font-family: 'Great Vibes', cursive; font-weight:400; }
+    .sub{ color:var(--muted); font-size: clamp(14px, 2.3vw, 16px); }
+
+    .card{ background: var(--soft); border-radius: var(--radius); padding: clamp(18px, 3vw, 26px); box-shadow: var(--shadow); }
+    .grid{ display:grid; gap:16px; }
+    @media (min-width: 720px){ .grid-cols{ grid-template-columns: 1fr 1fr; gap:18px; } }
+
+    label{ display:block; font-weight:600; margin: 12px 0 6px; }
+    .req::after{ content:" *"; color: var(--muted); font-weight: 400; }
+
+    input[type="text"], input[type="email"], input[type="number"], textarea, select{
+      width:100%; border:1px solid #d9d9d9; background:#fff; color:#111; border-radius:12px; padding:14px 14px; outline: none;
+    }
+    @media (prefers-color-scheme: dark){
+      input[type="text"], input[type="email"], input[type="number"], textarea, select{ background:#0e0e0e; color:#f0f0f0; border-color:#2b2b2b; }
+    }
+
+    input:focus, textarea:focus, select:focus{ box-shadow: var(--focus); border-color: transparent; }
+
+    .inline{ display:flex; gap:14px; align-items:center; flex-wrap: wrap; }
+    .pill{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; cursor:pointer; background:#fff; border:1px solid #d9d9d9; }
+    @media (prefers-color-scheme: dark){ .pill{ border-color:#2b2b2b; background:#0e0e0e; color:#f6f6f6; } }
+
+    /* Custom radios: filled circle when checked */
+    .pill input[type="radio"]{
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid #555; display:inline-grid; place-content:center; margin:0;
+    }
+    .pill input[type="radio"]:checked{ background-color:#000; border-color:#000; }
+
+    .hint{ color:var(--muted); font-size: 12px; margin-top:6px; }
+
+    .actions{ display:flex; gap:12px; align-items:center; justify-content:flex-start; margin-top:8px; flex-wrap: wrap; }
+    button{ -webkit-appearance:none; appearance:none; cursor:pointer; border:none; border-radius: 999px; padding: 14px 22px; font-weight: 700; letter-spacing:.02em; box-shadow: var(--shadow); transition: background .2s, color .2s; }
+    button:hover{ opacity:0.9; }
+    button[disabled]{ opacity:.6; cursor:not-allowed; }
+
+    #submitBtn, #saveBtn { background: var(--accent); color: var(--accent-text); }
+
+    .ghost, .ghost:visited { background: transparent; color:var(--fg); border:1px solid currentColor; }
+    .ghost:hover { background: var(--soft); }
+
+    .notice{ padding: 14px 16px; border-radius: 12px; background:#fff; border:1px dashed #d9d9d9; }
+    @media (prefers-color-scheme: dark){ .notice{ background:#0e0e0e; border-color:#2b2b2b; } }
+
+    footer{ text-align:center; color:var(--muted); font-size:12px; padding:32px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    .guest{ background:#fff; border:1px solid #d9d9d9; border-radius:12px; padding:14px; }
+    @media (prefers-color-scheme: dark){ .guest{ background:#0e0e0e; border-color:#2b2b2b; } }
+    .guest header{ display:flex; align-items:center; justify-content:space-between; gap:8px; text-align:left; }
+    .mini{ font-size:12px; color:var(--muted); }
+
+    @keyframes fadeUp{ from{ opacity:0; transform: translateY(8px); } to{ opacity:1; transform:none; } }
+    .shell, .card, header{ animation: fadeUp .6s ease both; }
+
+    /* Flip gallery */
+    .flip-gallery{ position:relative; border-radius: var(--radius); overflow:hidden; background:#000; color:#fff; box-shadow: var(--shadow); }
+    .flip-gallery .tiles{ display:grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 240px; gap:6px; padding:6px; }
+    @media (min-width: 720px){ .flip-gallery .tiles{ grid-auto-rows: 280px; gap:8px; padding:8px; } }
+    .tile{ position:relative; perspective: 1000px; border-radius:12px; overflow:hidden; }
+    .flip{ position:absolute; inset:0; transform-style: preserve-3d; transition: transform 900ms ease; border-radius:12px; }
+    .flip.is-flipped{ transform: rotateY(180deg); }
+    .face{ position:absolute; inset:0; backface-visibility:hidden; background-size:cover; background-position:center 30%; filter: grayscale(100%) contrast(1.05) brightness(.9); }
+    /* Raise crop for tall images (~40%) by URL match (kept harmless even if those URLs are not used) */
+    .tiles [style*="p4pK0C6.jpeg"],
+    .tiles [style*="C58EOXL.jpeg"]{ background-position:center 40% !important; }
+    .face.back{ transform: rotateY(180deg); }
+    .legend{ position:absolute; inset:auto 0 0 0; padding:16px; background:linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0)); text-align:center; z-index:2; }
+    .cta{ display:inline-block; margin-top:10px; background:#fff; color:#000; padding:10px 16px; border-radius:999px; font-weight:700; text-decoration:none; border:1px solid #fff; }
+    .cta:hover{ filter: brightness(0.9); }
   </style>
 </head>
 <body>
-  <!-- Full HTML content from canvas goes here -->
+  <a class="sr-only" href="#rsvp-heading">Skip to RSVP form</a>
+
+  <!-- Top gallery -->
+  <section id="gallery" aria-label="Photo highlights" style="width:100%; max-width:1000px; margin:auto; padding:0 32px 24px;">
+    <div class="flip-gallery">
+      <div class="tiles" id="flipTiles" aria-hidden="true">
+        <div class="tile">
+          <div class="flip">
+            <div class="face front" style="background-image:url('https://i.imgur.com/4r4jaeH.jpeg');"></div>
+            <div class="face back"  style="background-image:url('https://i.imgur.com/DGQCkwq.jpeg');"></div>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="flip">
+            <div class="face front" style="background-image:url('https://i.imgur.com/mULQ0EF.jpeg');"></div>
+            <div class="face back"  style="background-image:url('https://i.imgur.com/pBvx2YN.jpeg');"></div>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="flip">
+            <div class="face front" style="background-image:url('https://i.imgur.com/g3pxHSd.jpeg');"></div>
+            <div class="face back"  style="background-image:url('https://i.imgur.com/TZcphYU.jpeg');"></div>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="flip">
+            <div class="face front" style="background-image:url('https://i.imgur.com/pPCzhgU.jpeg');"></div>
+            <div class="face back"  style="background-image:url('https://i.imgur.com/EyarIGa.jpeg');"></div>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="flip">
+            <div class="face front" style="background-image:url('https://i.imgur.com/zVId5CV.jpeg');"></div>
+            <div class="face back"  style="background-image:url('https://i.imgur.com/wHnEcqK.jpeg');"></div>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="flip">
+            <div class="face front" style="background-image:url('https://i.imgur.com/TZcphYU.jpeg');"></div>
+            <div class="face back"  style="background-image:url('https://i.imgur.com/EyarIGa.jpeg');"></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <a class="cta" href="#rsvp" aria-label="Skip to RSVP form">RSVP now</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="shell" aria-labelledby="title">
+    <header>
+      <div class="brand" id="title">Pete & Nicole's Wedding</div>
+      <p class="sub">12/12/2025 • The Loft @ The Rabbit Hotel • 1:30pm</p>
+    </header>
+
+    <section id="rsvp" class="card" aria-labelledby="rsvp-heading">
+      <h2 id="rsvp-heading" class="sr-only">RSVP Form</h2>
+      <form id="rsvpForm" aria-describedby="privacyNote">
+        <div class="grid grid-cols">
+          <div>
+            <label for="fullName" class="req">Name of person RSVP'ing</label>
+            <input id="fullName" name="fullName" type="text" required autocomplete="name" />
+          </div>
+          <div>
+            <label for="email" class="req">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </div>
+        </div>
+
+        <fieldset style="margin-top:12px; border:0; padding:0;">
+          <legend class="req" style="font-weight:600; margin-bottom:8px;">Will you attend?</legend>
+          <div class="inline" role="radiogroup" aria-label="Attendance">
+            <label class="pill"><input type="radio" name="attending" value="Yes" required /> Yes, we will attend</label>
+            <label class="pill"><input type="radio" name="attending" value="No" /> Regretfully decline</label>
+          </div>
+        </fieldset>
+
+        <div id="guestsWrap" style="display:none;">
+          <label class="req" style="margin-top:16px;">Guests</label>
+          <div id="guestsList" class="grid"></div>
+          <div class="actions">
+            <button type="button" id="addGuestBtn" class="ghost">Add partner</button>
+          </div>
+          <p class="hint">You can RSVP for up to 2 people (including yourself). Change MAX_GUESTS in the script to allow more.</p>
+        </div>
+
+        <div class="grid grid-cols">
+          <div>
+            <label for="phone">Phone (optional)</label>
+            <input id="phone" name="phone" type="text" inputmode="tel" autocomplete="tel" />
+          </div>
+          <div id="partySizeWrap" style="display:none;">
+            <label for="partySize" class="req">Party size</label>
+            <input id="partySize" name="partySize" type="number" min="1" max="10" value="1" required readonly />
+            <p class="hint">Auto-fills based on the number of named guests.</p>
+          </div>
+        </div>
+
+        <div>
+          <label for="message">Message (optional)</label>
+          <textarea id="message" name="message" rows="4" placeholder="Leave a message/advice for the bride & groom.. Request a song.."></textarea>
+        </div>
+
+        <div class="notice" id="privacyNote">
+          We’ll use your details solely for event planning and won’t share them with third parties.
+        </div>
+
+        <input type="hidden" name="guestsJson" id="guestsJson" />
+
+        <div class="actions">
+          <button id="submitBtn" type="submit">Send RSVP</button>
+          <button class="ghost" type="reset">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      <small>© <span id="year"></span> Designed & Created by P8 UTH</small>
+    </footer>
+  </main>
+
+  <!-- Templates -->
+  <template id="guestTpl">
+    <div class="guest">
+      <header>
+        <strong class="g-title">Guest <span class="g-index"></span></strong>
+        <button type="button" class="ghost g-remove" aria-label="Remove guest" title="Remove guest">Remove</button>
+      </header>
+      <div class="grid grid-cols">
+        <div>
+          <label class="req">Full name</label>
+          <input type="text" class="g-name" required />
+        </div>
+        <div>
+          <label>Dietary requirements</label>
+          <input type="text" class="g-diet" placeholder="e.g., vegetarian, nut allergy" />
+        </div>
+      </div>
+      <p class="mini">We only need one email/phone for the household above.</p>
+    </div>
+  </template>
+
+  <template id="successTpl">
+    <section class="card" aria-live="polite">
+      <h2 style="margin:0 0 8px; font-size:24px;">Thank you — your RSVP is in!</h2>
+      <p>We've recorded your response. A copy is shown below:</p>
+      <pre id="summary" style="white-space:pre-wrap; background:#fff; border:1px solid #d9d9d9; padding:14px; border-radius:12px; margin: 10px 0 18px;"> </pre>
+      <div class="actions">
+        <button id="editBtn" class="ghost">Edit response</button>
+        <button id="saveBtn">Download receipt (.txt)</button>
+      </div>
+    </section>
+  </template>
+
+  <script>
+    // ---- Flip gallery animation ----
+    (function(){
+      var grid = document.getElementById('flipTiles');
+      if(!grid) return;
+      var tiles = Array.prototype.slice.call(grid.querySelectorAll('.flip'));
+      var gallery = grid.closest('.flip-gallery');
+      var timer = null;
+      var hoverPause = false;
+
+      function flipSome(){
+        if(hoverPause) return;
+        if(!tiles.length) return;
+        var count = Math.max(1, Math.floor(tiles.length / 3)); // flip about a third of tiles
+        var chosen = new Set();
+        while(chosen.size < count){ chosen.add(Math.floor(Math.random() * tiles.length)); }
+        chosen.forEach(function(i){
+          var el = tiles[i];
+          el.classList.toggle('is-flipped');
+          setTimeout(function(){ el.classList.toggle('is-flipped'); }, 3200 + Math.random() * 1600);
+        });
+      }
+      function start(){ if(!timer) timer = setInterval(flipSome, 2400); }
+      function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+
+      if(gallery){
+        gallery.addEventListener('mouseenter', function(){ hoverPause = true; });
+        gallery.addEventListener('mouseleave', function(){ hoverPause = false; });
+      }
+
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!reduce){
+        if(document.readyState === 'loading'){
+          document.addEventListener('DOMContentLoaded', function(){ start(); setTimeout(flipSome, 800); });
+        } else {
+          start(); setTimeout(flipSome, 800);
+        }
+        document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+      }
+    })();
+
+    // ---- Footer year & RSVP helpers ----
+    (function(){
+      var year = document.getElementById('year');
+      if(year) year.textContent = new Date().getFullYear();
+
+      var form = document.getElementById('rsvpForm');
+      if(!form) return;
+      var guestsWrap = document.getElementById('guestsWrap');
+      var partyWrap  = document.getElementById('partySizeWrap');
+      var guestsList = document.getElementById('guestsList');
+      var addBtn     = document.getElementById('addGuestBtn');
+      var MAX_GUESTS = 2;
+
+      function syncParty(){
+        var ps = document.getElementById('partySize');
+        if(ps){ ps.value = guestsList.children.length || 0; }
+      }
+      function addGuest(){
+        if(guestsList.children.length >= MAX_GUESTS) return;
+        var tpl = document.getElementById('guestTpl');
+        if(!tpl) return;
+        var node = tpl.content.cloneNode(true);
+        guestsList.appendChild(node);
+        renumber();
+        syncParty();
+      }
+      function renumber(){
+        Array.prototype.slice.call(guestsList.children).forEach(function(el, i){
+          var idx = el.querySelector('.g-index'); if(idx) idx.textContent = i + 1;
+          var name = el.querySelector('.g-name'); if(name) name.setAttribute('name', 'guests['+i+'][name]');
+          var diet = el.querySelector('.g-diet'); if(diet) diet.setAttribute('name', 'guests['+i+'][diet]');
+          var removeBtn = el.querySelector('.g-remove');
+          if(removeBtn && !removeBtn.dataset.bound){
+            removeBtn.addEventListener('click', function(){ el.remove(); renumber(); syncParty(); });
+            removeBtn.dataset.bound = '1';
+          }
+        });
+      }
+
+      if(addBtn) addBtn.addEventListener('click', addGuest);
+
+      form.addEventListener('change', function(e){
+        var t = e.target;
+        if(t && t.name === 'attending'){
+          var yes = t.value === 'Yes';
+          if(guestsWrap) guestsWrap.style.display = yes ? '' : 'none';
+          if(partyWrap)  partyWrap.style.display  = yes ? '' : 'none';
+          if(yes && guestsList.children.length === 0) addGuest();
+          if(!yes){ guestsList.innerHTML = ''; }
+          syncParty();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
