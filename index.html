@@ -395,9 +395,10 @@
             form.reset();
           })
           .catch(function(err){
-            console.error(err);
-            alert('Sorry — email failed to send. Please try again.');
-          })
+  console.error('EmailJS error:', err);
+  var msg = (err && (err.text || err.message)) ? (err.text || err.message) : 'Unknown error';
+  alert('Email send failed: ' + msg + '\n\nCheck the browser console for details.');
+})
           .finally(function(){ if(submitBtn) submitBtn.disabled = false; });
       });
     })();
