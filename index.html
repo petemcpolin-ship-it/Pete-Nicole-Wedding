@@ -32,7 +32,13 @@
     }
     .shell{ width:min(950px, 100%); display:grid; gap:28px; margin:auto; padding:32px; }
     header{ display:grid; gap:8px; text-align:center; padding:32px; }
-    .brand{ font-size: clamp(32px, 5vw, 60px); font-family: 'Great Vibes', cursive; font-weight:400; }
+    .brand{
+      font-size: clamp(32px, 5vw, 60px);
+      font-family: 'Great Vibes', cursive;
+      font-weight:400;
+      letter-spacing: 2px;   /* clearer letter spacing for script font */
+      word-spacing: 6px;     /* more space between words */
+    }
     .sub{ color:var(--muted); font-size: clamp(14px, 2.3vw, 16px); }
 
     .card{ background: var(--soft); border-radius: var(--radius); padding: clamp(18px, 3vw, 26px); box-shadow: var(--shadow); }
@@ -55,7 +61,7 @@
     .pill{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; cursor:pointer; background:#fff; border:1px solid #d9d9d9; }
     @media (prefers-color-scheme: dark){ .pill{ border-color:#2b2b2b; background:#0e0e0e; color:#f6f6f6; } }
 
-    /* Radios: clear black dot when checked; pill stays white */
+    /* Radios: black inner dot when checked; pill stays white */
     .pill input[type="radio"]{
       -webkit-appearance:none; -moz-appearance:none; appearance:none;
       width:20px; height:20px; border-radius:50%;
@@ -113,6 +119,7 @@
     .flip{ position:absolute; inset:0; transform-style: preserve-3d; transition: transform 900ms ease; border-radius:12px; }
     .flip.is-flipped{ transform: rotateY(180deg); }
     .face{ position:absolute; inset:0; backface-visibility:hidden; background-size:cover; background-position:center 30%; filter: grayscale(100%) contrast(1.05) brightness(.9); }
+    /* Raise crop for tall images (~40%) by URL match */
     .tiles [style*="p4pK0C6.jpeg"],
     .tiles [style*="C58EOXL.jpeg"]{ background-position:center 40% !important; }
     .face.back{ transform: rotateY(180deg); }
@@ -161,68 +168,68 @@
       <p class="sub">12/12/2025 • The Loft @ The Rabbit Hotel • 1:30pm</p>
     </header>
 
-  <section id="rsvp" class="card" aria-labelledby="rsvp-heading">
-    <h2 id="rsvp-heading" class="sr-only">RSVP Form</h2>
-    <form id="rsvpForm" aria-describedby="privacyNote">
-      <!-- Honeypot -->
-      <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-100vw;opacity:0;height:0;width:0;" />
+    <section id="rsvp" class="card" aria-labelledby="rsvp-heading">
+      <h2 id="rsvp-heading" class="sr-only">RSVP Form</h2>
+      <form id="rsvpForm" aria-describedby="privacyNote">
+        <!-- Honeypot -->
+        <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-100vw;opacity:0;height:0;width:0;" />
 
-      <div class="grid grid-cols">
+        <div class="grid grid-cols">
+          <div>
+            <label for="fullName" class="req">Name of person RSVP'ing</label>
+            <input id="fullName" name="fullName" type="text" required autocomplete="name" />
+          </div>
+          <div>
+            <label for="email" class="req">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </div>
+        </div>
+
+        <fieldset style="margin-top:12px; border:0; padding:0;">
+          <legend class="req" style="font-weight:600; margin-bottom:8px;">Will you attend?</legend>
+          <div class="inline" role="radiogroup" aria-label="Attendance">
+            <label class="pill"><input type="radio" name="attending" value="Yes" required /> Yes, we will attend</label>
+            <label class="pill"><input type="radio" name="attending" value="No" /> Regretfully decline</label>
+          </div>
+        </fieldset>
+
+        <div id="guestsWrap" style="display:none;">
+          <label class="req" style="margin-top:16px;">Guests</label>
+          <div id="guestsList" class="grid"></div>
+          <div class="actions">
+            <button type="button" id="addGuestBtn" class="ghost">Add partner</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols">
+          <div>
+            <label for="phone">Phone (optional)</label>
+            <input id="phone" name="phone" type="text" inputmode="tel" autocomplete="tel" />
+          </div>
+          <div id="partySizeWrap" style="display:none;">
+            <label for="partySize" class="req">Party size</label>
+            <input id="partySize" name="partySize" type="number" min="1" max="10" value="1" required readonly />
+            <p class="hint">Auto-fills based on the number of named guests.</p>
+          </div>
+        </div>
+
         <div>
-          <label for="fullName" class="req">Name of person RSVP'ing</label>
-          <input id="fullName" name="fullName" type="text" required autocomplete="name" />
+          <label for="message">Message (optional)</label>
+          <textarea id="message" name="message" rows="4" placeholder="Leave a message/advice for the bride & groom.. Request a song.."></textarea>
         </div>
-        <div>
-          <label for="email" class="req">Email</label>
-          <input id="email" name="email" type="email" required autocomplete="email" />
-        </div>
-      </div>
 
-      <fieldset style="margin-top:12px; border:0; padding:0;">
-        <legend class="req" style="font-weight:600; margin-bottom:8px;">Will you attend?</legend>
-        <div class="inline" role="radiogroup" aria-label="Attendance">
-          <label class="pill"><input type="radio" name="attending" value="Yes" required /> Yes, we will attend</label>
-          <label class="pill"><input type="radio" name="attending" value="No" /> Regretfully decline</label>
+        <div class="notice" id="privacyNote">
+          We’ll use your details solely for event planning and won’t share them with third parties.
         </div>
-      </fieldset>
 
-      <div id="guestsWrap" style="display:none;">
-        <label class="req" style="margin-top:16px;">Guests</label>
-        <div id="guestsList" class="grid"></div>
+        <input type="hidden" name="guestsJson" id="guestsJson" />
+
         <div class="actions">
-          <button type="button" id="addGuestBtn" class="ghost">Add partner</button>
+          <button id="submitBtn" type="submit">Send RSVP</button>
+          <button class="ghost" type="reset">Reset</button>
         </div>
-      </div>
-
-      <div class="grid grid-cols">
-        <div>
-          <label for="phone">Phone (optional)</label>
-          <input id="phone" name="phone" type="text" inputmode="tel" autocomplete="tel" />
-        </div>
-        <div id="partySizeWrap" style="display:none;">
-          <label for="partySize" class="req">Party size</label>
-          <input id="partySize" name="partySize" type="number" min="1" max="10" value="1" required readonly />
-          <p class="hint">Auto-fills based on the number of named guests.</p>
-        </div>
-      </div>
-
-      <div>
-        <label for="message">Message (optional)</label>
-        <textarea id="message" name="message" rows="4" placeholder="Leave a message/advice for the bride & groom.. Request a song.."></textarea>
-      </div>
-
-      <div class="notice" id="privacyNote">
-        We’ll use your details solely for event planning and won’t share them with third parties.
-      </div>
-
-      <input type="hidden" name="guestsJson" id="guestsJson" />
-
-      <div class="actions">
-        <button id="submitBtn" type="submit">Send RSVP</button>
-        <button class="ghost" type="reset">Reset</button>
-      </div>
-    </form>
-  </section>
+      </form>
+    </section>
 
     <footer>
       <small>© <span id="year"></span> Designed & Created by P8 UTH</small>
@@ -364,12 +371,15 @@
     var form = document.getElementById('rsvpForm');
     if (!form) return;
 
+    /* Replace with YOUR Apps Script Web App /exec URL */
     var SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyUfVHA-06NdHibLYIaJlyRRHtkLNzaZe3YU-yD_GMKUNtXlodF3oY-bntoReBQXO82nA/exec";
 
     var successTpl = document.getElementById('successTpl');
     var mainCard   = document.getElementById('rsvp').closest('.card');
     var submitBtn  = document.getElementById('submitBtn');
+
     function isSpam(fd){ return (fd.get('company')||'').trim() !== ''; }
+
     function showSuccess(payload){
       if (successTpl && mainCard) {
         var frag = successTpl.content.cloneNode(true);
@@ -413,7 +423,7 @@
       // no-CORS: browser can’t read the response, but Apps Script will receive it.
       fetch(SHEETS_ENDPOINT, {
         method: 'POST',
-        mode: 'no-cors',
+        mode: 'no-cORS'.toLowerCase(),
         body: JSON.stringify(payload)
       })
       .then(function(){ showSuccess(payload); })
