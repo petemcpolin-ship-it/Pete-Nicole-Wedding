@@ -331,22 +331,21 @@
     })();
   </script>
 
-  <!-- EmailJS (frontend email, no server needed) -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    (function(){
-      try { emailjs.init("tY6612UscyZwe3gaZ"); }
-      catch(err) { console.warn('EmailJS init failed', err); }
-    })();
-  </script>
+  <!-- Google Sheets submit (no server needed) -->
   <script>
     (function(){
       var form = document.getElementById('rsvpForm');
       if(!form) return;
+
+      // 1) Paste your Apps Script Web App URL here:
+      var SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyUfVHA-06NdHibLYIaJlyRRHtkLNzaZe3YU-yD_GMKUNtXlodF3oY-bntoReBQXO82nA/exec";
+
+      // 2) Success UI targets
       var successTpl = document.getElementById('successTpl');
       var mainCard   = document.getElementById('rsvp').closest('.card');
       var submitBtn  = document.getElementById('submitBtn');
 
+      // Same honeypot
       function isSpam(fd){ return (fd.get('company')||'').trim() !== ''; }
 
       form.addEventListener('submit', function(e){
@@ -373,33 +372,37 @@
           phone:     fd.get('phone')    || '',
           partySize: String(partySize),
           message:   fd.get('message')  || '',
-          guests_json: JSON.stringify(guests)
+          guests:    guests
         };
 
         if(submitBtn) submitBtn.disabled = true;
 
-        // Replace with your real EmailJS Service + Template IDs:
-        var SERVICE_ID  = "service_c6pcqj5";
-        var TEMPLATE_ID = "template_slo2sq6";
-
-        emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
-          .then(function(){
-            if(successTpl && mainCard){
-              var frag = successTpl.content.cloneNode(true);
-              var pre = frag.querySelector('#summary');
-              if(pre) pre.textContent = JSON.stringify(payload, null, 2);
-              mainCard.replaceWith(frag);
-            } else {
-              alert('RSVP sent! Thank you 🎉');
-            }
-            form.reset();
-          })
-          .catch(function(err){
-  console.error('EmailJS error:', err);
-  var msg = (err && (err.text || err.message)) ? (err.text || err.message) : 'Unknown error';
-  alert('Email send failed: ' + msg + '\n\nCheck the browser console for details.');
-})
-          .finally(function(){ if(submitBtn) submitBtn.disabled = false; });
+        // Use text/plain to avoid CORS preflight (Apps Script friendly)
+        fetch(SHEETS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        })
+        .then(function(res){ return res.text(); })
+        .then(function(txt){
+          // Show receipt
+          if(successTpl && mainCard){
+            var frag = successTpl.content.cloneNode(true);
+            var pre = frag.querySelector('#summary');
+            if(pre) pre.textContent = JSON.stringify(payload, null, 2);
+            mainCard.replaceWith(frag);
+          } else {
+            alert('RSVP sent! Thank you 🎉');
+          }
+          form.reset();
+        })
+        .catch(function(err){
+          console.error('Sheets send error:', err);
+          alert('Sorry — something went wrong sending your RSVP. Please try again.');
+        })
+        .finally(function(){
+          if(submitBtn) submitBtn.disabled = false;
+        });
       });
     })();
   </script>
