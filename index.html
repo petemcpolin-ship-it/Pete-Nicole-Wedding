@@ -55,30 +55,28 @@
     .pill{ display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; cursor:pointer; background:#fff; border:1px solid #d9d9d9; }
     @media (prefers-color-scheme: dark){ .pill{ border-color:#2b2b2b; background:#0e0e0e; color:#f6f6f6; } }
 
-    /* Improved custom radios — filled dot + better contrast */
+    /* Radios: clear black dot when checked; pill stays white */
     .pill input[type="radio"]{
       -webkit-appearance:none; -moz-appearance:none; appearance:none;
       width:20px; height:20px; border-radius:50%;
-      border:2px solid currentColor; margin:0; display:inline-grid; place-content:center;
-      background:transparent; color:#111;
+      border:2px solid #9a9a9a; margin:0; display:inline-grid; place-content:center;
+      background:transparent;
     }
     .pill input[type="radio"]::before{
       content:""; width:10px; height:10px; border-radius:50%;
-      transform:scale(0); background:currentColor; transition:transform .15s ease;
+      transform:scale(0); background:#000; transition:transform .15s ease;
     }
+    .pill input[type="radio"]:checked{ border-color:#000; }
     .pill input[type="radio"]:checked::before{ transform:scale(1); }
-    @media (prefers-color-scheme: dark){
-      .pill input[type="radio"]{ color:#fff; border-color:#bdbdbd; }
-      .pill input[type="radio"]:checked{ border-color:#fff; }
-    }
     .pill:has(input[type="radio"]:checked){
       box-shadow:0 0 0 2px rgba(0,0,0,.08) inset;
       background:#fff; color:#000;
     }
     @media (prefers-color-scheme: dark){
-      .pill:has(input[type="radio"]:checked){
-        background:#fff; color:#000; border-color:#fff;
-      }
+      .pill input[type="radio"]{ border-color:#bdbdbd; }
+      .pill input[type="radio"]:checked{ border-color:#fff; }
+      .pill input[type="radio"]::before{ background:#000; }
+      .pill:has(input[type="radio"]:checked){ background:#fff; color:#000; border-color:#fff; }
     }
 
     .hint{ color:var(--muted); font-size: 12px; margin-top:6px; }
@@ -194,7 +192,6 @@
         <div class="actions">
           <button type="button" id="addGuestBtn" class="ghost">Add partner</button>
         </div>
-        <!-- helper hint removed -->
       </div>
 
       <div class="grid grid-cols">
