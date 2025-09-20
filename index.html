@@ -331,80 +331,88 @@
     })();
   </script>
 
-  <!-- Google Sheets submit (no server needed) -->
-  <script>
-    (function(){
-      var form = document.getElementById('rsvpForm');
-      if(!form) return;
+ <!-- Google Sheets submit (no server needed) -->
+<script>
+  (function () {
+    var form = document.getElementById('rsvpForm');
+    if (!form) return;
 
-      // 1) Paste your Apps Script Web App URL here:
-      var SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyUfVHA-06NdHibLYIaJlyRRHtkLNzaZe3YU-yD_GMKUNtXlodF3oY-bntoReBQXO82nA/exec";
+    // Paste your Apps Script Web App URL here:
+    var SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyUfVHA-06NdHibLYIaJlyRRHtkLNzaZe3YU-yD_GMKUNtXlodF3oY-bntoReBQXO82nA/exec";
 
-      // 2) Success UI targets
-      var successTpl = document.getElementById('successTpl');
-      var mainCard   = document.getElementById('rsvp').closest('.card');
-      var submitBtn  = document.getElementById('submitBtn');
+    var successTpl = document.getElementById('successTpl');
+    var mainCard   = document.getElementById('rsvp').closest('.card');
+    var submitBtn  = document.getElementById('submitBtn');
 
-      // Same honeypot
-      function isSpam(fd){ return (fd.get('company')||'').trim() !== ''; }
+    function isSpam(fd) { return (fd.get('company') || '').trim() !== ''; }
 
-      form.addEventListener('submit', function(e){
-        e.preventDefault();
-        var fd = new FormData(form);
-        if(isSpam(fd)) return; // silently drop bots
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var fd = new FormData(form);
+      if (isSpam(fd)) return;
 
-        var attending = fd.get('attending') || '';
-        var list = document.getElementById('guestsList');
-        var guests = [];
-        Array.prototype.slice.call(list.children).forEach(function(el){
-          var name = (el.querySelector('.g-name') && el.querySelector('.g-name').value) || '';
-          var diet = (el.querySelector('.g-diet') && el.querySelector('.g-diet').value) || '';
-          if(name.trim()) guests.push({ name: name.trim(), diet: diet.trim() });
-        });
+      var attending = fd.get('attending') || '';
+      var list = document.getElementById('guestsList');
+      var guests = [];
+      Array.prototype.slice.call(list.children).forEach(function (el) {
+        var name = (el.querySelector('.g-name') && el.querySelector('.g-name').value) || '';
+        var diet = (el.querySelector('.g-diet') && el.querySelector('.g-diet').value) || '';
+        if (name.trim()) guests.push({ name: name.trim(), diet: diet.trim() });
+      });
 
-        var partySizeEl = document.getElementById('partySize');
-        var partySize   = partySizeEl ? partySizeEl.value : (attending==='Yes' ? (guests.length || 1) : 0);
+      var partySizeEl = document.getElementById('partySize');
+      var partySize = partySizeEl ? partySizeEl.value : (attending === 'Yes' ? (guests.length || 1) : 0);
 
-        var payload = {
-          fullName:  fd.get('fullName') || '',
-          email:     fd.get('email')    || '',
-          attending: attending,
-          phone:     fd.get('phone')    || '',
-          partySize: String(partySize),
-          message:   fd.get('message')  || '',
-          guests:    guests
-        };
+      var payload = {
+        fullName: fd.get('fullName') || '',
+        email: fd.get('email') || '',
+        attending: attending,
+        phone: fd.get('phone') || '',
+        partySize: String(partySize),
+        message: fd.get('message') || '',
+        guests: guests
+      };
 
-        if(submitBtn) submitBtn.disabled = true;
+      if (submitBtn) submitBtn.disabled = true;
 
-        // Use text/plain to avoid CORS preflight (Apps Script friendly)
-        fetch(SHEETS_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify(payload)
-        })
-        .then(function(res){ return res.text(); })
-        .then(function(txt){
-          // Show receipt
-          if(successTpl && mainCard){
+      // Use text/plain to avoid CORS preflight
+      fetch(SHEETS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) { return res.text().then(function (t) { return { ok: res.ok, status: res.status, text: t }; }); })
+        .then(function (out) {
+          var data = {};
+          try { data = JSON.parse(out.text); } catch (e) {}
+
+          if (!out.ok || data.ok !== true) {
+            var msg = (data && data.error) ? data.error : ('HTTP ' + out.status + ' ' + out.text);
+            alert('Sheets error: ' + msg);
+            throw new Error(msg);
+          }
+
+          // Success -> show receipt
+          if (successTpl && mainCard) {
             var frag = successTpl.content.cloneNode(true);
             var pre = frag.querySelector('#summary');
-            if(pre) pre.textContent = JSON.stringify(payload, null, 2);
+            if (pre) pre.textContent = JSON.stringify(payload, null, 2);
             mainCard.replaceWith(frag);
           } else {
             alert('RSVP sent! Thank you 🎉');
           }
           form.reset();
         })
-        .catch(function(err){
+        .catch(function (err) {
           console.error('Sheets send error:', err);
           alert('Sorry — something went wrong sending your RSVP. Please try again.');
         })
-        .finally(function(){
-          if(submitBtn) submitBtn.disabled = false;
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
         });
-      });
-    })();
-  </script>
+    });
+  })();
+</script>
+
 </body>
 </html>
