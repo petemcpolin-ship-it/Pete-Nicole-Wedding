@@ -331,20 +331,42 @@
     })();
   </script>
 
- <!-- Google Sheets submit (no server needed) -->
+<!-- Google Sheets submit (robust) -->
 <script>
   (function () {
     var form = document.getElementById('rsvpForm');
     if (!form) return;
 
-    // Paste your Apps Script Web App URL here:
-    var SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxBpfby9ZfgnUztUYDKd-ThY_Y4Vv_dvE-YcdM-_V4yLHQ5o-UHOnBSpTRlQxKFLegipQ/exec";
+    // Your Apps Script Web App URL (must be the /exec URL)
+    var SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyUfVHA-06NdHibLYIaJlyRRHtkLNzaZe3YU-yD_GMKUNtXlodF3oY-bntoReBQXO82nA/exec";
 
     var successTpl = document.getElementById('successTpl');
     var mainCard   = document.getElementById('rsvp').closest('.card');
     var submitBtn  = document.getElementById('submitBtn');
 
     function isSpam(fd) { return (fd.get('company') || '').trim() !== ''; }
+
+    function showSuccess(payload) {
+      if (successTpl && mainCard) {
+        var frag = successTpl.content.cloneNode(true);
+        var pre = frag.querySelector('#summary');
+        if (pre) pre.textContent = JSON.stringify(payload, null, 2);
+        mainCard.replaceWith(frag);
+      } else {
+        alert('RSVP sent! Thank you 🎉');
+      }
+      form.reset();
+    }
+
+    function handleResponsePack(out) {
+      var data = {};
+      try { data = JSON.parse(out.text); } catch (_) {}
+      if (!out.ok || data.ok !== true) {
+        var msg = (data && data.error) ? data.error : ('HTTP ' + out.status + ' ' + out.text);
+        throw new Error(msg);
+      }
+      return data;
+    }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -365,54 +387,45 @@
 
       var payload = {
         fullName: fd.get('fullName') || '',
-        email: fd.get('email') || '',
+        email:    fd.get('email') || '',
         attending: attending,
-        phone: fd.get('phone') || '',
+        phone:    fd.get('phone') || '',
         partySize: String(partySize),
-        message: fd.get('message') || '',
-        guests: guests
+        message:  fd.get('message') || '',
+        guests:   guests
       };
 
       if (submitBtn) submitBtn.disabled = true;
 
-      // Use text/plain to avoid CORS preflight
+      // Try #1: simplest POST, no headers (avoids preflight; Apps Script reads raw body)
       fetch(SHEETS_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       })
+      .then(function (res) { return res.text().then(function (t) { return { ok: res.ok, status: res.status, text: t }; }); })
+      .then(function (out) { handleResponsePack(out); showSuccess(payload); })
+      .catch(function (err1) {
+        console.warn('First attempt failed, retrying as form-encoded…', err1);
+
+        // Try #2: form-encoded fallback (Apps Script will read e.parameter.data)
+        var body = 'data=' + encodeURIComponent(JSON.stringify(payload));
+        return fetch(SHEETS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+          body: body
+        })
         .then(function (res) { return res.text().then(function (t) { return { ok: res.ok, status: res.status, text: t }; }); })
-        .then(function (out) {
-          var data = {};
-          try { data = JSON.parse(out.text); } catch (e) {}
-
-          if (!out.ok || data.ok !== true) {
-            var msg = (data && data.error) ? data.error : ('HTTP ' + out.status + ' ' + out.text);
-            alert('Sheets error: ' + msg);
-            throw new Error(msg);
-          }
-
-          // Success -> show receipt
-          if (successTpl && mainCard) {
-            var frag = successTpl.content.cloneNode(true);
-            var pre = frag.querySelector('#summary');
-            if (pre) pre.textContent = JSON.stringify(payload, null, 2);
-            mainCard.replaceWith(frag);
-          } else {
-            alert('RSVP sent! Thank you 🎉');
-          }
-          form.reset();
-        })
-        .catch(function (err) {
-          console.error('Sheets send error:', err);
-          alert('Sorry — something went wrong sending your RSVP. Please try again.');
-        })
-        .finally(function () {
-          if (submitBtn) submitBtn.disabled = false;
+        .then(function (out) { handleResponsePack(out); showSuccess(payload); })
+        .catch(function (err2) {
+          console.error('Sheets send error (both attempts failed):', err2);
+          alert('Sheets error: ' + (err2 && err2.message ? err2.message : 'Unknown error') + '\n\nIf this persists, confirm Web App is deployed to Anyone and you’re using the /exec URL.');
         });
+      })
+      .finally(function () { if (submitBtn) submitBtn.disabled = false; });
     });
   })();
 </script>
+
 
 </body>
 </html>
