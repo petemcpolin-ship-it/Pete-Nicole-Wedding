@@ -10,17 +10,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#ffffff;
-      --fg:#111111;
-      --muted:#6b6b6b;
-      --soft:#f3f3f3;
-      --accent:#111111;
-      --accent-text:#ffffff;
-      --radius:18px;
-      --shadow:0 10px 30px rgba(0,0,0,.08);
-      --focus: 0 0 0 3px #000;
-    }
+ /* ----- Force Dark Theme (ignores OS preference) ----- */
+body.force-dark{
+  --bg:#0a0a0a;
+  --fg:#f6f6f6;
+  --muted:#bdbdbd;
+  --soft:#151515;
+  --accent:#ffffff;
+  --accent-text:#000000;
+  --shadow:0 10px 30px rgba(0,0,0,.3);
+  --focus: 0 0 0 3px #fff;
+}
+
+/* Inputs & cards on forced dark */
+body.force-dark input[type="text"],
+body.force-dark input[type="email"],
+body.force-dark input[type="number"],
+body.force-dark textarea,
+body.force-dark select{
+  background:#0e0e0e;
+  color:#f0f0f0;
+  border-color:#2b2b2b;
+}
+
+body.force-dark .notice,
+body.force-dark .guest{
+  background:#0e0e0e;
+  border-color:#2b2b2b;
+}
+
     @media (prefers-color-scheme: dark){
       :root{ --bg:#0a0a0a; --fg:#f6f6f6; --muted:#bdbdbd; --soft:#151515; --accent:#ffffff; --accent-text:#000000; --shadow:0 10px 30px rgba(0,0,0,.3); --focus: 0 0 0 3px #fff; }
     }
@@ -143,7 +161,7 @@
     }
   </style>
 </head>
-<body>
+<body class="force-dark">
   <a class="sr-only" href="#rsvp-heading">Skip to RSVP form</a>
 
   <!-- Top gallery (updated to Catbox images) -->
