@@ -102,7 +102,20 @@ body.force-dark .guest{
       .pill input[type="radio"]::before{ background:#000; }
       .pill:has(input[type="radio"]:checked){ background:#fff; color:#000; border-color:#fff; }
     }
+    /* --- Fix for dark mode: black text beside radio buttons --- */
+body.force-dark .pill {
+  background:#fff;
+  color:#000;
+  border-color:#444;
+}
 
+body.force-dark .pill:hover {
+  background:#eaeaea;
+}
+
+body.force-dark .pill input[type="radio"]:checked::before {
+  background:#000;
+}
     .hint{ color:var(--muted); font-size: 12px; margin-top:6px; }
 
     .actions{ display:flex; gap:12px; align-items:center; justify-content:flex-start; margin-top:8px; flex-wrap: wrap; }
