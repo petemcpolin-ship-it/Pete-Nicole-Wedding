@@ -10,35 +10,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
- /* ----- Force Dark Theme (ignores OS preference) ----- */
-body.force-dark{
-  --bg:#0a0a0a;
-  --fg:#f6f6f6;
-  --muted:#bdbdbd;
-  --soft:#151515;
-  --accent:#ffffff;
-  --accent-text:#000000;
-  --shadow:0 10px 30px rgba(0,0,0,.3);
-  --focus: 0 0 0 3px #fff;
-}
-
-/* Inputs & cards on forced dark */
-body.force-dark input[type="text"],
-body.force-dark input[type="email"],
-body.force-dark input[type="number"],
-body.force-dark textarea,
-body.force-dark select{
-  background:#0e0e0e;
-  color:#f0f0f0;
-  border-color:#2b2b2b;
-}
-
-body.force-dark .notice,
-body.force-dark .guest{
-  background:#0e0e0e;
-  border-color:#2b2b2b;
-}
-
+    :root{
+      --bg:#ffffff;
+      --fg:#111111;
+      --muted:#6b6b6b;
+      --soft:#f3f3f3;
+      --accent:#111111;
+      --accent-text:#ffffff;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --focus: 0 0 0 3px #000;
+    }
     @media (prefers-color-scheme: dark){
       :root{ --bg:#0a0a0a; --fg:#f6f6f6; --muted:#bdbdbd; --soft:#151515; --accent:#ffffff; --accent-text:#000000; --shadow:0 10px 30px rgba(0,0,0,.3); --focus: 0 0 0 3px #fff; }
     }
@@ -102,20 +84,7 @@ body.force-dark .guest{
       .pill input[type="radio"]::before{ background:#000; }
       .pill:has(input[type="radio"]:checked){ background:#fff; color:#000; border-color:#fff; }
     }
-    /* --- Fix for dark mode: black text beside radio buttons --- */
-body.force-dark .pill {
-  background:#fff;
-  color:#000;
-  border-color:#444;
-}
 
-body.force-dark .pill:hover {
-  background:#eaeaea;
-}
-
-body.force-dark .pill input[type="radio"]:checked::before {
-  background:#000;
-}
     .hint{ color:var(--muted); font-size: 12px; margin-top:6px; }
 
     .actions{ display:flex; gap:12px; align-items:center; justify-content:flex-start; margin-top:8px; flex-wrap: wrap; }
@@ -172,59 +141,89 @@ body.force-dark .pill input[type="radio"]:checked::before {
     @media (prefers-color-scheme: dark){
       #summary{ border-color:#2b2b2b; }
     }
+
+    /* ----- Force Dark Theme (ignores OS preference) ----- */
+    body.force-dark{
+      --bg:#0a0a0a;
+      --fg:#f6f6f6;
+      --muted:#bdbdbd;
+      --soft:#151515;
+      --accent:#ffffff;
+      --accent-text:#000000;
+      --shadow:0 10px 30px rgba(0,0,0,.3);
+      --focus: 0 0 0 3px #fff;
+    }
+    body.force-dark input[type="text"],
+    body.force-dark input[type="email"],
+    body.force-dark input[type="number"],
+    body.force-dark textarea,
+    body.force-dark select{
+      background:#0e0e0e;
+      color:#f0f0f0;
+      border-color:#2b2b2b;
+    }
+    body.force-dark .notice,
+    body.force-dark .guest{
+      background:#0e0e0e;
+      border-color:#2b2b2b;
+    }
+    /* Dark-mode radio pill text fix */
+    body.force-dark .pill { background:#fff; color:#000; border-color:#444; }
+    body.force-dark .pill:hover { background:#eaeaea; }
+    body.force-dark .pill input[type="radio"]:checked::before { background:#000; }
   </style>
 </head>
 <body class="force-dark">
   <a class="sr-only" href="#rsvp-heading">Skip to RSVP form</a>
 
-  <!-- Top gallery (updated to Catbox images) -->
+  <!-- Top gallery (updated to 13-source set, 9 tiles) -->
   <section id="gallery" aria-label="Photo highlights" style="width:100%; max-width:1000px; margin:auto; padding:0 32px 24px;">
     <div class="flip-gallery">
       <div class="tiles" id="flipTiles" aria-hidden="true">
-        <!-- We build 9 tiles, pairing fronts/backs by cycling the 9 images -->
+        <!-- Fronts: indices 0..8; Backs: (i+9)%13 to avoid matching fronts -->
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/9jh79o.jpeg');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/cuqfru.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/6zz49m.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/v9u2ot.jpeg');"></div>
         </div></div>
 
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/yzxcbf.jpeg');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/04hu9x.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/p9x59r.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/dumrmb.jpeg');"></div>
         </div></div>
 
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/wsda7b.jpeg');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/nhyfsh.heic');"></div>
-        </div></div>
-
-        <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/9tn3vo.jpeg');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/lujwiw.heic');"></div>
-        </div></div>
-
-        <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/n63whp.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/506r0y.jpeg');"></div>
           <div class="face back"  style="background-image:url('https://files.catbox.moe/lwqjgr.jpeg');"></div>
         </div></div>
 
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/cuqfru.jpeg');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/yzxcbf.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/ifpb0o.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/ve7er5.jpeg');"></div>
         </div></div>
 
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/04hu9x.jpeg');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/wsda7b.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/3dgn6b.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/6zz49m.jpeg');"></div>
         </div></div>
 
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/nhyfsh.heic');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/9tn3vo.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/2h22wr.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/p9x59r.jpeg');"></div>
         </div></div>
 
         <div class="tile"><div class="flip">
-          <div class="face front" style="background-image:url('https://files.catbox.moe/lujwiw.heic');"></div>
-          <div class="face back"  style="background-image:url('https://files.catbox.moe/n63whp.jpeg');"></div>
+          <div class="face front" style="background-image:url('https://files.catbox.moe/9w23bg.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/506r0y.jpeg');"></div>
+        </div></div>
+
+        <div class="tile"><div class="flip">
+          <div class="face front" style="background-image:url('https://files.catbox.moe/dn0235.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/ifpb0o.jpeg');"></div>
+        </div></div>
+
+        <div class="tile"><div class="flip">
+          <div class="face front" style="background-image:url('https://files.catbox.moe/o4t75b.jpeg');"></div>
+          <div class="face back"  style="background-image:url('https://files.catbox.moe/3dgn6b.jpeg');"></div>
         </div></div>
       </div>
 
